@@ -20,3 +20,10 @@ eyes<- read_csv("raw.csv") %>% drop_na()
 # *************************************************************
 M <- cor(eyes)
 corrplot(M, method = "number")
+
+
+# *************************************************************
+# THE QUESTIONS!
+# *************************************************************
+# ANOVA cheat sheet http://www.quantide.com/wp-content/uploads/2017/02/Three-way-Anova-with-R.pdf
+m1 <- aov(lens.ridge.size ~ sex * activity.time * hunting.strategy)
