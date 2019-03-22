@@ -12,7 +12,9 @@ library(tidyverse)
 library(corrplot)
 
 # load file
-eyes<- read_csv("raw.csv") %>% drop_na()
+eyes<- read_csv("raw.csv") 
+
+eyes.no.na <- eyes %>% drop_na()
 
 
 # *************************************************************
