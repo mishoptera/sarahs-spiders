@@ -14,13 +14,14 @@ library(corrplot)
 # load file
 eyes<- read_csv("raw.csv") 
 
-eyes.no.na <- eyes %>% drop_na()
+eyes$AME.cuticle.ridge.size %<>% as.numeric()
+str(eyes)
 
 
 # *************************************************************
 # CORRELATIONS BETWEEN VARIABLES
 # *************************************************************
-M <- cor(eyes)
+M <- cor(eyes.no.na %>% select(num.ridges:AME.outer.edge.distance.micron))
 corrplot(M, method = "number")
 
 
