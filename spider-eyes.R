@@ -10,27 +10,16 @@
 # load libraries
 library(tidyverse)
 library(corrplot)
+library(lazyeval)
 
 # load file
-eyes<- read_csv("raw.csv") 
-
-eyes %<>% select(-c(ratio.num.ridges.to.body.size, ratio.cuticle.ridge.size.to.body.size,
-                    ratio.ridge.size.to.body.size)) %>%
-  slice(-19)
-  
-eyes$AME.cuticle.ridge.size %<>% as.numeric()
-eyes$ratio.cuticle.ridge.size.to.eye.size %<>% as.numeric()
-eyes$ratio.ridge.size.to.eye.size %<>% as.numeric()
-str(eyes)
+ALE<- read_csv("ALEmeasurements.csv") 
 
 
 # *************************************************************
 # CORRELATIONS BETWEEN VARIABLES
 # *************************************************************
-eyes.no.na <- eyes %>% 
-  select(-c(sex, active.time, eco)) %>%
-  drop_na()
-M <- cor(eyes.no.na %>% select(num.ridges:AME.outer.edge.distance.micron))
+M <- cor(ALE %>% select(ceph:ALE_rid_tr_rid))
 corrplot(M, method = "color")
 
 
@@ -39,23 +28,23 @@ corrplot(M, method = "color")
 # *************************************************************
 # ANOVA cheat sheet http://www.quantide.com/wp-content/uploads/2017/02/Three-way-Anova-with-R.pdf
 
-# for ridge number
-m.num.ridges <- aov(est.num.ridges ~ sex * active.time * eco, data = eyes)
-summary(m.num.ridges)
+# example goal
+m <- aov(ALE_eye_area ~ sex*activity*hunting, data = ALE)
+summary(m)
 
-m.num.ridges <- aov(num.ridges.per.micron ~ sex * active.time * eco, data = eyes)
-summary(m.num.ridges)
+variable_to_test <- "ceph"
+# function to run model
+aov_model_test <- function(variable_to_test){
+  print(variable_to_test)
+  m <- aov(eval(variable_to_test) ~ sex * activity * hunting, data = ALE)
+  print(summary(m))
+  return(m)
+}
 
-# for eye size
-m.eye.size <- aov(AME.entire.eye ~ sex * active.time * eco, data = eyes)
-summary(m.eye.size)
+variable_vector <- names(ALE) 
+variable_vector[-c(1:4)]
 
-# for ridge size (trough)
-m.ridge.size <- aov(AME.ridge.trough ~ sex * active.time * eco, data = eyes)
-summary(m.ridge.size)
-
-# for ridge size (?)
-m.ridge.size <- aov(AME.ridges ~ sex * active.time * eco, data = eyes)
-summary(m.ridge.size)
-
-
+lapply(variable_vector, function(i){
+  assign(paste0("aov_", i) , aov_model_test(i), 
+         envir = .GlobalEnv)
+})
