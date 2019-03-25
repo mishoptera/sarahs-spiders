@@ -15,6 +15,10 @@ library(lazyeval)
 # load file
 ALE<- read_csv("ALEmeasurements.csv") 
 
+# *************************************************************
+# GENERAL EDA
+# *************************************************************
+plot.design(sex ~ ., data = ALE)
 
 # *************************************************************
 # CORRELATIONS BETWEEN VARIABLES
@@ -29,8 +33,44 @@ corrplot(M, method = "color")
 # ANOVA cheat sheet http://www.quantide.com/wp-content/uploads/2017/02/Three-way-Anova-with-R.pdf
 
 # example goal
-m <- aov(ALE_eye_area ~ sex*activity*hunting, data = ALE)
-summary(m)
+m1 <- aov(ALE_eye_area ~ sex+activity+hunting, data = ALE)
+summary(m1)
+m1.aic <- extractAIC(m1)
+m1.aic
+
+m2 <- aov(ALE_eye_area ~ activity+hunting, data = ALE)
+summary(m2)
+m2.aic <- extractAIC(m2)
+m2.aic
+
+m3 <- aov(ALE_eye_area ~ hunting, data = ALE)
+summary(m3)
+m3.aic <- extractAIC(m3)
+m3.aic
+
+m3 <- aov(ALE_eye_area ~ sex+activity, data = ALE)
+summary(m3)
+m3.aic <- extractAIC(m3)
+m3.aic
+
+m3 <- lm(ALE_eye_area ~ hunting, data = ALE)
+summary(m3)
+
+m4 <- lm(ALE_eye_area ~ hunting + activity, data = ALE)
+summary(m4)
+
+m5 <- lm(ALE_eye_area ~ sex + hunting + activity, data = ALE)
+summary(m5)
+
+m6 <- lm(ALE_eye_area ~ sex + activity, data = ALE)
+
+m7 <- lm(ALE_eye_area ~ sex + hunting, data = ALE)
+
+anova(m3, m4, m5, m6, m7)
+
+n <- glm(ALE_eye_area ~ sex+activity+hunting, data = ALE)
+summary(n)
+
 
 variable_to_test <- "ceph"
 # function to run model
