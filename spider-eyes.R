@@ -10,15 +10,20 @@
 # load libraries
 library(tidyverse)
 library(corrplot)
-library(lazyeval)
 
 # load file
 ALE<- read_csv("ALEmeasurements.csv") 
 
 # *************************************************************
-# GENERAL EDA
+# INTERESTING STUFF
 # *************************************************************
-plot.design(sex ~ ., data = ALE)
+m <- lm(ALE_ridge_no_lens ~ ALE_ridge_size_lens, data = ALE)
+summary(m)
+plot(ALE_ridge_no_lens ~ ALE_ridge_size_lens, data = ALE)
+
+n <- lm(ALE_ridge_no_lens ~ ALE_rid_tr_rid, data = ALE)
+summary(n)
+plot(ALE_ridge_no_lens ~ ALE_rid_tr_rid, data = ALE)
 
 # *************************************************************
 # CORRELATIONS BETWEEN VARIABLES
@@ -88,3 +93,8 @@ lapply(variable_vector, function(i){
   assign(paste0("aov_", i) , aov_model_test(i), 
          envir = .GlobalEnv)
 })
+
+
+# *************************************************************
+# PLOTTING MADNESS
+# *************************************************************
