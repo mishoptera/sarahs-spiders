@@ -12,7 +12,7 @@ library(tidyverse)
 library(corrplot)
 
 # load file
-ALE<- read_csv("ALEmeasurements.csv") 
+ALE<- read_csv("ALEmeasurements.csv") %>% drop_na()
 
 # *************************************************************
 # INTERESTING STUFF
